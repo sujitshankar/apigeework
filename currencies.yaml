@@ -1,0 +1,124 @@
+swagger: "2.0"
+info:
+  description: |
+   Real-time and historical exchange rates for 168 world currencies, delivering currency pairs in universally usable JSON format
+  version: "1.0.0"
+  title: Currency Converter
+  termsOfService: www.rssoftware.com
+  contact:
+    name: sujits@rssoftware.co.in
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+host: sujitshankar-test.apigee.net
+basePath: /v1
+schemes:
+  - http
+paths:
+  /currencies:
+    get:
+      tags:
+        - currencies
+      summary: Real-time and historical exchange rates for 168 world currencies
+      description: to get specific currency details,multiple specific currencies can be provided as comma seperated list as queryparameter currencies=AUD,USD,INR
+      operationId: getCurrencies
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: currencycode
+          description: Multiple currency code with comma(,) seperated values Use like AUD,USD,INR
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/currencies"
+        "400":
+          description: Invalid status value
+      security:
+        - currencies_auth:
+          - write_currencies
+          - read_currencies
+  /currencies/{date}:
+    get:
+      tags:
+        - currencies
+      summary: Find currencies by Date 
+      description: Returns currencies for specified date. Input should be in YYYY-MM-DD format
+      operationId: getCurrenciesBydate
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: date
+          description: Returns Rate for a specific Date
+          required: true
+          type: string
+          format: date
+        - in: query
+          name: currencycode
+          description: Multiple currency code with comma(,) seperated values Use like AUD,USD,INR
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+      responses:
+        "404":
+          description: currency not found
+        "200":
+          description: successful operation
+          schema:
+            $ref: "#/definitions/currencies"
+        "400":
+          description: Invalid ID supplied
+      security:
+        - api_key: []
+        - currencies_auth:
+          - write_currencies
+          - read_currencies
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: api_key
+    in: header
+  currencies_auth:
+    type: oauth2
+    authorizationUrl: https://sujitshankar-test.apigee.net/oauth/client_credential
+    flow: implicit
+    scopes:
+      write_currencies: modify currencies
+      read_currencies: read your currencies
+definitions:
+  currencies:
+    type: object
+    required:
+      - success
+    properties:
+      success:
+        type: string
+        example: true
+      timestamp:
+        type: string
+        example: 1465301052
+      source:
+        type: string
+        example: 1465301052
+      quotes:
+        type: array
+        items:
+          $ref: "#/definitions/currency"
+  currency:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
