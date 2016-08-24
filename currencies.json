@@ -1,0 +1,251 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Card Details",
+        "description": "The Card Details API performs 3 different operations like displaying all user account details, adding user accounts and display user account details by passing cardholderid or cardnumber in JSON format.\n",
+        "termsOfService": "www.rssoftware.com",
+        "contact": {
+            "name": "suvojitc@rssoftware.co.in"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "host": "rssoftwarestaging-test.apigee.net",
+    "basePath": "/",
+    "schemes": [
+        "http"
+    ],
+    "paths": {
+        "/cards": {
+            "post": {
+                "tags": [
+                    "cards"
+                ],
+                "summary": "Add a new user account",
+                "description": "",
+                "operationId": "adduser",
+                "consumes": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "cards",
+                        "description": "User account object that needs to be added to the store",
+                        "required": false,
+                        "schema": {
+                            "items": {
+                                "$ref": "#/definitions/UserAccount"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/UserResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "cardholderid not found"
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            },
+            "get": {
+                "tags": [
+                    "cards"
+                ],
+                "summary": "Displa list of card holder accounts",
+                "description": "Simple API call to display list of account holders",
+                "operationId": "getAccountDetails",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/cards"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid status value"
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/cards/{cardnumber}": {
+            "get": {
+                "tags": [
+                    "cards"
+                ],
+                "summary": "Finds cardholder account by card number",
+                "description": "Only 1 card number provided in the query",
+                "operationId": "findPetsByTags",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "cardnumber",
+                        "description": "Tags to filter by cardnumber",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/cards"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid tag value"
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        }
+    },
+    "securityDefinitions": {
+        "api_key": {
+            "type": "apiKey",
+            "name": "api_key",
+            "in": "header"
+        }
+    },
+    "definitions": {
+        "cards": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "string",
+                    "example": "true"
+                },
+                "cardaccount": {
+                    "type": "string",
+                    "example": "45211234567800910000"
+                },
+                "firstname": {
+                    "type": "string",
+                    "example": "Suvojit"
+                },
+                "lastname": {
+                    "type": "string",
+                    "example": "Chandra"
+                },
+                "phone": {
+                    "type": "string",
+                    "example": "6508632614"
+                },
+                "address": {
+                    "type": "string",
+                    "example": "879 shell blvd foster city ca 94404"
+                },
+                "dob": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "mm/dd/yyyy"
+                },
+                "cardholderid": {
+                    "type": "string"
+                },
+                "cardexpirationdate": {
+                    "type": "string"
+                }
+            }
+        },
+        "UserResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "This user account is created successfully."
+                },
+                "messageid": {
+                    "type": "string",
+                    "example": "123"
+                },
+                "cardnumber": {
+                    "type": "string",
+                    "example": "4501 2304 1234 5678"
+                },
+                "cardholderid": {
+                    "type": "string",
+                    "example": "12345678990"
+                },
+                "cardexpirationdate": {
+                    "type": "string",
+                    "example": "2020:01:01"
+                }
+            }
+        },
+        "UserAccount": {
+            "type": "object",
+            "required": [
+                "cardnumber",
+                "firstname",
+                "lastname",
+                "phone",
+                "address",
+                "dob"
+            ],
+            "properties": {
+                "cardnumber": {
+                    "type": "string"
+                },
+                "firstname": {
+                    "type": "string"
+                },
+                "lastname": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string",
+                    "example": "6508632614"
+                },
+                "address": {
+                    "type": "string",
+                    "example": "879 shell blvd foster city ca 94404"
+                },
+                "dob": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "mm/dd/yyyy"
+                }
+            }
+        }
+    }
+}
